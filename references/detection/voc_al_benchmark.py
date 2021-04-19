@@ -87,11 +87,11 @@ def main(args, sampling_method: SamplingMethod):
 
     # initialize active learning agent and scorer
     agent = ActiveLearningAgent(client)
-    scorer = None
+    scorer = None # will be initialized lazily if necessary
 
     # initialize episode log
     task_config = {'model': args.model, 'epochs': args.epochs}
-    sampler_config = {'name': SamplingMethod.CORAL}
+    sampler_config = {'sampling_method': sampling_method}
     log = ALEpisodeLog(task_config=task_config, sampler_config=sampler_config)
 
     # iterate over how many samples are in the training datasets
@@ -199,7 +199,6 @@ def main(args, sampling_method: SamplingMethod):
             
             # create scorer
             scorer = ScorerObjectDetection(model_output)
-            print(len(scorer._calculate_scores()['prediction-margin']))
 
         total_time = time.time() - start_time
         total_time_str = str(datetime.timedelta(seconds=int(total_time)))
@@ -222,7 +221,7 @@ if __name__ == "__main__":
     parser.add_argument('--embedding_path', type=str, default='embeddings/VOCDetection/embeddings.csv')
     parser.add_argument('--log_json', type=str, default='outputs/VOCDetection.json')
 
-    # TODOD: comment
+    # torchvision reference args
     parser.add_argument('--data-path', default='datasets/', help='dataset')
     parser.add_argument('--dataset', default='coco', help='dataset')
     #parser.add_argument('--model', default='maskrcnn_resnet50_fpn', help='model')
@@ -280,12 +279,12 @@ if __name__ == "__main__":
     # benchmark
     benchmark_plogger = ALBenchmarkPlogger(filename=args.log_json)
     sampling_methods = [
-        #SamplingMethod.CORESET,
-        #SamplingMethod.CORAL,
-        #SamplingMethod.ACTIVE_LEARNING,
+        SamplingMethod.CORESET,
+        SamplingMethod.CORAL,
+        SamplingMethod.ACTIVE_LEARNING,
         SamplingMethod.RANDOM,
     ]
     for sampling_method in sampling_methods:
-        for _ in range(1):
+        for _ in range(3):
             log = main(args, sampling_method)
             benchmark_plogger.append_al_episode_logs_to_file([log])
