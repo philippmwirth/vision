@@ -91,7 +91,7 @@ def main(args, sampling_method: SamplingMethod):
 
     # initialize episode log
     task_config = {'model': args.model, 'epochs': args.epochs}
-    sampler_config = {'sampling_method': sampling_method}
+    sampler_config = {'name': sampling_method}
     log = ALEpisodeLog(task_config=task_config, sampler_config=sampler_config)
 
     # iterate over how many samples are in the training datasets
