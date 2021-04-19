@@ -1,6 +1,8 @@
 # Lightly Active Learning Benchmarks Object Detection
 
-This folder contains the torchvision reference training scripts but adapted to benchmark lightly active learning. The purpose of the adaptations was to 
+This folder contains the torchvision reference training scripts but adapted to benchmark lightly active learning.
+
+The purpose of the adaptations was to 
 1. Show how easy it is to integrate active learning with Lightly into existing training scripts.
 2. Benchmark the different active learning samplers offered by Lightly.
 
