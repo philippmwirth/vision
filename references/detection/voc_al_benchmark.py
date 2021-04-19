@@ -281,10 +281,9 @@ if __name__ == "__main__":
     sampling_methods = [
         SamplingMethod.CORESET,
         SamplingMethod.CORAL,
-        SamplingMethod.ACTIVE_LEARNING,
         SamplingMethod.RANDOM,
     ]
     for sampling_method in sampling_methods:
-        for _ in range(3):
+        for _ in range(2):
             log = main(args, sampling_method)
             benchmark_plogger.append_al_episode_logs_to_file([log])
