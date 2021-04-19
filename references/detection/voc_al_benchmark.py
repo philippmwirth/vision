@@ -99,8 +99,8 @@ def main(args, sampling_method: SamplingMethod):
         
         # sample new training set
         if scorer is None:
-            # first iteration (use coreset for all but random)
-            method = sampling_method if sampling_method == SamplingMethod.RANDOM else SamplingMethod.CORESET
+            # first iteration (use random for all but coreset)
+            method = sampling_method if sampling_method == SamplingMethod.CORESET else SamplingMethod.RANDOM
             config = SamplerConfig(n_samples=n_samples, method=method)
             labeled_set = agent.query(config)
         else:
