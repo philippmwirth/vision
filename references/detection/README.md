@@ -6,19 +6,33 @@ The purpose of the adaptations was to
 1. Show how easy it is to integrate active learning with Lightly into existing training scripts.
 2. Benchmark the different active learning samplers offered by Lightly.
 
-## Benchmarks
 
-Additionally, to the torchvision setup, `lightly>=1.1.4` is required to run the benchmarks:
+## Setup
+
+To execute the example commands below you must install the following:
+
+```
+cython
+pycocotools
+matplotlib
+```
+
+In addition to the torchvision setup, `lightly>=1.1.4` is required to run the benchmarks:
 ```
 pip install lightly
 ```
 
+
+## Benchmarks
+
+
 ### Faster R-CNN ResNet-50 FPN VOC 2012
 ```
 python voc_al_benchmark.py --token [YOUR_TOKEN] --steps 1143 2286 3429 4572 5717 --lr 0.003
+python plot_a_log.py outputs/VOCDetection.json
 ```
 
-### KITTI
+### Faster R-CNN ResNet-50 FPN KITTI
 Coming soon...
 
 
