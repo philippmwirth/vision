@@ -19,7 +19,7 @@ def predict_on_filenames(model, agent, lightly_dataset, device):
     # make predictions on the unlabeled set
     dataset_unlabeled = LightlySubset(
         lightly_dataset,
-        agent.unlabeled_set
+        agent.query_set
     )
     # hack: set transforms for evaluation and then unset them again
     dataset_unlabeled.base_dataset.dataset.transforms = get_transform(train=False)
