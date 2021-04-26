@@ -102,13 +102,14 @@ def main(args, sampling_method: SamplingMethod):
             # first iteration (use random for all but coreset)
             method = sampling_method if sampling_method == SamplingMethod.CORESET else SamplingMethod.RANDOM
             config = SamplerConfig(n_samples=n_samples, method=method)
-            labeled_set = agent.query(config)
+            agent.query(config)
         else:
             # following iterations
             config = SamplerConfig(n_samples=n_samples, method=sampling_method)
-            labeled_set = agent.query(config, scorer)
+            agent.query(config, scorer)
 
         # create subset of training set based on selected samples
+        labeled_set = agent.labeled_set
         labeled_indices = [filename_to_index(i) for i in labeled_set]
         dataset_train = torch.utils.data.Subset(dataset, labeled_indices)
 
@@ -279,9 +280,9 @@ if __name__ == "__main__":
     # benchmark
     benchmark_plogger = ALBenchmarkPlogger(filename=args.log_json)
     sampling_methods = [
-        SamplingMethod.CORESET,
+        #SamplingMethod.CORESET,
         SamplingMethod.CORAL,
-        SamplingMethod.RANDOM,
+        #SamplingMethod.RANDOM,
     ]
     for sampling_method in sampling_methods:
         for _ in range(2):
