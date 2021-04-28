@@ -34,6 +34,8 @@ from coco_utils import get_coco, get_coco_kp
 from group_by_aspect_ratio import GroupedBatchSampler, create_aspect_ratio_groups
 from engine import train_one_epoch, evaluate
 
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+
 import utils
 
 import lightly
@@ -144,8 +146,17 @@ def main(args, sampling_method: SamplingMethod):
         if "rcnn" in args.model:
             if args.rpn_score_thresh is not None:
                 kwargs["rpn_score_thresh"] = args.rpn_score_thresh
-        model = torchvision.models.detection.__dict__[args.model](num_classes=num_classes, pretrained=args.pretrained,
-                                                                **kwargs)
+
+        # load pretrained models and replace the prediction heads
+        # https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html#finetuning-from-a-pretrained-model
+        model = torchvision.models.detection.__dict__[args.model](pretrained=args.pretrained)
+        in_features = model.roi_heads.box_predictor.cls_score.in_features
+        model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+
+        # this was the old way to do it, throws an error because of size mismatch
+        #model = torchvision.models.detection.__dict__[args.model](num_classes=num_classes, pretrained=args.pretrained,
+        #                                                        **kwargs)
+
         model.to(device)
 
         model_without_ddp = model
