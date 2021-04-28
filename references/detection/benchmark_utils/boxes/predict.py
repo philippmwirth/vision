@@ -3,7 +3,7 @@ import torch
 import torchvision
 import lightly
 
-from lightly.data.lighty_subset import LightlySubset
+from lightly.data.lightly_subset import LightlySubset
 from lightly.active_learning.utils.bounding_box import BoundingBox
 from lightly.active_learning.utils.object_detection_output import ObjectDetectionOutput
 
@@ -37,7 +37,7 @@ def predict_on_filenames(model, agent, lightly_dataset, device):
         for i, (image, target, filename) in enumerate(data_loader_unlabeled):
             
             # make sure the predictions are in the correct order
-            assert filename[0] == agent.unlabeled_set[i]
+            assert filename[0] == agent.query_set[i]
 
             # move image to device
             image = [image[0].to(device)]
