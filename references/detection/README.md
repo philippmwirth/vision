@@ -28,6 +28,7 @@ pip install lightly
 
 ### Faster R-CNN ResNet-50 FPN VOC 2012
 ```
+rm outputs/VOCDetection.json
 python voc_al_benchmark.py --token [YOUR_TOKEN] --steps 1143 2286 3429 4572 5717 --lr 0.003
 python plot_a_log.py outputs/VOCDetection.json
 ```
