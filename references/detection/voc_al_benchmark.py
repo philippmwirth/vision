@@ -291,11 +291,11 @@ if __name__ == "__main__":
     # benchmark
     benchmark_plogger = ALBenchmarkPlogger(filename=args.log_json)
     sampling_methods = [
-        #SamplingMethod.CORESET,
+        SamplingMethod.CORESET,
         SamplingMethod.CORAL,
-        #SamplingMethod.RANDOM,
+        SamplingMethod.RANDOM,
     ]
-    for sampling_method in sampling_methods:
-        for _ in range(2):
+    for _ in range(3):
+        for sampling_method in sampling_methods:
             log = main(args, sampling_method)
             benchmark_plogger.append_al_episode_logs_to_file([log])

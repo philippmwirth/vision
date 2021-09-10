@@ -59,10 +59,11 @@ def predict_on_filenames(model, agent, lightly_dataset, device):
             # TODO: get actual bounding box shape
             _, height, width = image[0].shape
             box_objects = []
+            eps = 1e-4
             for box in boxes:
                 x0, x1 = box[0], box[2]
                 y0, y1 = box[1], box[3]
-                box_objects.append(BoundingBox(0., 0., 0., 0.))
+                box_objects.append(BoundingBox(0., 0., 0. + eps, 0. + eps))
 
             # put everything into object detection output
             output = ObjectDetectionOutput.from_scores(

@@ -159,9 +159,11 @@ class ALBenchmarkPlogger:
             no_labelled_samples_list = sorted(accuracies_list_dict.keys())
             with_confidence = any(lower_bound > lower_bound_std)
             if with_confidence:
-                plt.fill_between(no_labelled_samples_list, lower_bound, upper_bound, color=color_cycle(i), alpha=.5)
-            plt.fill_between(no_labelled_samples_list, lower_bound_std, upper_bound_std, color=color_cycle(i), alpha=.1)
-            plt.plot(no_labelled_samples_list, means, color=color_cycle(i))
+                pass
+                #plt.fill_between(no_labelled_samples_list, lower_bound, upper_bound, color=color_cycle(i), alpha=.5)
+            #plt.fill_between(no_labelled_samples_list, lower_bound_std, upper_bound_std, color=color_cycle(i), alpha=.1)
+            #plt.plot(no_labelled_samples_list, means, color=color_cycle(i))
+            plt.errorbar(no_labelled_samples_list, means, (upper_bound_std - lower_bound_std) / 2., color=color_cycle(i))
             legends += [agent_name]
 
         '''

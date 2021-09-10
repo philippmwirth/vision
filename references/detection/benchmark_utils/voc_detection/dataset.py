@@ -98,7 +98,7 @@ def get_VOCDetection_dataset(image_set, transform, data_path):
     """
     dataset = torchvision.datasets.VOCDetection(
         data_path,
-        download=False,
+        download=True,
         image_set=image_set,
         transforms=transform
     )
