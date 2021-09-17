@@ -28,9 +28,6 @@ import torchvision
 import torchvision.models.detection
 import torchvision.models.detection.mask_rcnn
 
-
-from coco_utils import get_coco, get_coco_kp
-
 from group_by_aspect_ratio import GroupedBatchSampler, create_aspect_ratio_groups
 from engine import train_one_epoch, evaluate
 
@@ -47,8 +44,7 @@ from lightly.active_learning.scorers import ScorerObjectDetection
 
 
 from benchmark_utils.plogger import ALEpisodeLog, ALBenchmarkPlogger
-from benchmark_utils.voc_detection.dataset import get_VOCDetection_dataset, get_transform, index_to_filename, filename_to_index
-from benchmark_utils.voc_detection.metrics import get_metrics
+from benchmark_utils.metrics import get_metrics
 from benchmark_utils.boxes.predict import predict_on_filenames
 
 
@@ -61,12 +57,21 @@ def main(args, sampling_method: SamplingMethod):
     # Data loading code
     print("Loading data")
 
+    if args.dataset_name == 'VOCDetection':
+        from benchmark_utils.voc.dataset import get_dataset, get_transform, index_to_filename, filename_to_index
+    elif args.dataset_name == 'KITTIDetection':
+        from benchmark_utils.kitti.dataset import get_dataset, get_transform, index_to_filename, filename_to_index
+    else:
+        raise ValueError(
+            f'Dataset {args.dataset_name} is not supported! Try one of VOCDetection, KITTIDetection'
+        )
+
     # get datasets (1 for training, 1 for testing, 1 for api)
-    dataset, num_classes = get_VOCDetection_dataset("train", get_transform(train=True), args.data_path)
-    dataset_test, _ = get_VOCDetection_dataset("val", get_transform(train=False), args.data_path)
+    dataset, num_classes = get_dataset("train", get_transform(train=True), args.data_path)
+    dataset_test, _ = get_dataset("val", get_transform(train=False), args.data_path)
 
     # get a lightly dataset (for api)
-    lightly_dataset, _ = get_VOCDetection_dataset('train', None, args.data_path)
+    lightly_dataset, _ = get_dataset('train', None, args.data_path)
     lightly_dataset = lightly.data.LightlyDataset.from_torch_dataset(lightly_dataset, index_to_filename=index_to_filename)
 
     # upload training dataset (without transforms)

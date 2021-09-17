@@ -92,7 +92,7 @@ class PrepareInstanceVOC(object):
         return image, target
 
 
-def get_VOCDetection_dataset(image_set, transform, data_path):
+def get_dataset(image_set, transform, data_path):
     """
 
     """
