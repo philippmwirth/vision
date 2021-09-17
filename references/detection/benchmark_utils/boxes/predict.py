@@ -8,7 +8,7 @@ from lightly.active_learning.utils.bounding_box import BoundingBox
 from lightly.active_learning.utils.object_detection_output import ObjectDetectionOutput
 
 import utils
-from benchmark_utils.voc_detection.dataset import get_transform
+from benchmark_utils.voc.dataset import get_transform
 
 
 def predict_on_filenames(model, agent, lightly_dataset, device):

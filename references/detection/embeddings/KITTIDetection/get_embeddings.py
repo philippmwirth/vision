@@ -10,7 +10,7 @@ class EmbeddingVOC:
         self.dataset = torchvision.datasets.Kitti(
             path,
             download=True,
-            image_set='train',
+            train=True,
             transform=torchvision.transforms.ToTensor()
         )
 
@@ -34,7 +34,7 @@ def main():
         torchvision.transforms.ToTensor()
     ])
 
-    dataset = EmbeddingVOC('../../datasets')
+    dataset = EmbeddingVOC('/datasets')
 
     dataloader = torch.utils.data.DataLoader(
         dataset,
