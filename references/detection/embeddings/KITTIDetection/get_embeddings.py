@@ -3,16 +3,13 @@ import torch.nn as nn
 import torchvision
 import lightly
 
-
-class EmbeddingVOC:
+class EmbeddingKitti:
 
     def __init__(self, path: str):
-        self.dataset = torchvision.datasets.Kitti(
-            path,
-            download=True,
-            train=True,
-            transform=torchvision.transforms.ToTensor()
-        )
+        full_dataset = torchvision.datasets.Kitti(path, train=True, transform=torchvision.transforms.ToTensor())
+        train_size = int(0.8 * len(full_dataset))
+        test_size = len(full_dataset) - train_size
+        self.dataset, _ = torch.utils.data.random_split(full_dataset, [train_size, test_size], generator=torch.Generator().manual_seed(42))
 
     def __getitem__(self, i):
         image, target = self.dataset[i]
@@ -34,7 +31,7 @@ def main():
         torchvision.transforms.ToTensor()
     ])
 
-    dataset = EmbeddingVOC('/datasets')
+    dataset = EmbeddingKitti('/datasets')
 
     dataloader = torch.utils.data.DataLoader(
         dataset,

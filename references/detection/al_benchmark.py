@@ -221,6 +221,8 @@ def main(args, sampling_method: SamplingMethod):
         total_time_str = str(datetime.timedelta(seconds=int(total_time)))
         print('Training time {}'.format(total_time_str))
 
+        break
+
     return log
 
 
@@ -304,3 +306,4 @@ if __name__ == "__main__":
         for sampling_method in sampling_methods:
             log = main(args, sampling_method)
             benchmark_plogger.append_al_episode_logs_to_file([log])
+            break

@@ -84,11 +84,23 @@ def get_dataset(image_set, transform, data_path):
     """
     dataset = torchvision.datasets.Kitti(
         data_path,
-        train=(image_set == 'train'),
+        train=True,
         download=True,
         transforms=transform
     )
-    return dataset, 9
+
+    train_size = int(0.8 * len(dataset))
+    test_size = len(dataset) - train_size
+    train, test = torch.utils.data.random_split(
+        dataset,
+        [train_size, test_size],
+        generator=torch.Generator().manual_seed(42),
+    )
+    print(train, test)
+    if image_set == 'train':
+        return train, 9
+    else:
+        return test, 9
 
 
 def get_transform(train):

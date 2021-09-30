@@ -7,6 +7,10 @@ from torchvision.transforms import transforms as T
 from typing import List, Tuple, Dict, Optional
 
 
+#F.get_image_size = F._get_image_size
+#F.get_image_num_channels = F._get_image_num_channels
+
+
 def _flip_coco_person_keypoints(kps, width):
     flip_inds = [0, 2, 1, 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 16, 15]
     flipped_data = kps[:, flip_inds]
