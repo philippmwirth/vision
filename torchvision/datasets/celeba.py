@@ -99,12 +99,16 @@ class CelebA(VisionDataset):
 
         mask = slice(None) if split_ is None else (splits.data == split_).squeeze()
 
-        self.filename = splits.index
+        if mask == slice(None):  # if split == "all"
+            self.filename = splits.index
+        else:
+            self.filename = [splits.index[i] for i in torch.squeeze(torch.nonzero(mask))]
         self.identity = identity.data[mask]
         self.bbox = bbox.data[mask]
         self.landmarks_align = landmarks_align.data[mask]
         self.attr = attr.data[mask]
-        self.attr = (self.attr + 1) // 2  # map from {-1, 1} to {0, 1}
+        # map from {-1, 1} to {0, 1}
+        self.attr = torch.div(self.attr + 1, 2, rounding_mode='floor')
         self.attr_names = attr.header
 
     def _load_csv(

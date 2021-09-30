@@ -22,9 +22,6 @@ from torchvision.datasets.utils import (
     USER_AGENT,
 )
 
-from common_utils import get_tmp_dir
-from fakedata_generation import places365_root
-
 
 def limit_requests_per_time(min_secs_between_requests=2.0):
     last_requests = {}
@@ -167,16 +164,15 @@ def assert_url_is_accessible(url, timeout=5.0):
         urlopen(request, timeout=timeout)
 
 
-def assert_file_downloads_correctly(url, md5, timeout=5.0):
-    with get_tmp_dir() as root:
-        file = path.join(root, path.basename(url))
-        with assert_server_response_ok():
-            with open(file, "wb") as fh:
-                request = Request(url, headers={"User-Agent": USER_AGENT})
-                response = urlopen(request, timeout=timeout)
-                fh.write(response.read())
+def assert_file_downloads_correctly(url, md5, tmpdir, timeout=5.0):
+    file = path.join(tmpdir, path.basename(url))
+    with assert_server_response_ok():
+        with open(file, "wb") as fh:
+            request = Request(url, headers={"User-Agent": USER_AGENT})
+            response = urlopen(request, timeout=timeout)
+            fh.write(response.read())
 
-        assert check_integrity(file, md5=md5), "The MD5 checksums mismatch"
+    assert check_integrity(file, md5=md5), "The MD5 checksums mismatch"
 
 
 class DownloadConfig:
@@ -221,14 +217,16 @@ def root():
 
 
 def places365():
-    with log_download_attempts(patch=False) as urls_and_md5s:
-        for split, small in itertools.product(("train-standard", "train-challenge", "val"), (False, True)):
-            with places365_root(split=split, small=small) as places365:
-                root, data = places365
-
-                datasets.Places365(root, split=split, small=small, download=True)
-
-    return make_download_configs(urls_and_md5s, name="Places365")
+    return itertools.chain(
+        *[
+            collect_download_configs(
+                lambda: datasets.Places365(ROOT, split=split, small=small, download=True),
+                name=f"Places365, {split}, {'small' if small else 'large'}",
+                file="places365",
+            )
+            for split, small in itertools.product(("train-standard", "train-challenge", "val"), (False, True))
+        ]
+    )
 
 
 def caltech101():
@@ -391,6 +389,38 @@ def widerface():
     )
 
 
+def kinetics():
+    return itertools.chain(
+        *[
+            collect_download_configs(
+                lambda: datasets.Kinetics(
+                    path.join(ROOT, f"Kinetics{num_classes}"),
+                    frames_per_clip=1,
+                    num_classes=num_classes,
+                    split=split,
+                    download=True,
+                ),
+                name=f"Kinetics, {num_classes}, {split}",
+                file="kinetics",
+            )
+            for num_classes, split in itertools.product(("400", "600", "700"), ("train", "val"))
+        ]
+    )
+
+
+def kitti():
+    return itertools.chain(
+        *[
+            collect_download_configs(
+                lambda train=train: datasets.Kitti(ROOT, train=train, download=True),
+                name=f"Kitti, {'train' if train else 'test'}",
+                file="kitti",
+            )
+            for train in (True, False)
+        ]
+    )
+
+
 def make_parametrize_kwargs(download_configs):
     argvalues = []
     ids = []
@@ -426,6 +456,8 @@ def make_parametrize_kwargs(download_configs):
             usps(),
             celeba(),
             widerface(),
+            kinetics(),
+            kitti(),
         )
     )
 )
